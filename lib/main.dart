@@ -1,3 +1,6 @@
+import 'package:diary/data/diary.dart';
+import 'package:diary/data/util.dart';
+import 'package:diary/write.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -37,7 +40,18 @@ class _MyHomePageState extends State<MyHomePage> {
         child: getPage(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+              builder: (ctx) => DiaryWritePage(
+                    diary: Diary(
+                      date: Utils.getFormatTime(DateTime.now()),
+                      title: "",
+                      memo: "",
+                      status: 0,
+                      image: "",
+                    ),
+                  )));
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
