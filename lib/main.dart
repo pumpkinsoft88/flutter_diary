@@ -1,3 +1,4 @@
+import 'package:diary/data/database.dart';
 import 'package:diary/data/diary.dart';
 import 'package:diary/data/util.dart';
 import 'package:diary/write.dart';
@@ -29,6 +30,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int selectIndex = 0;
+  final dbHelper = DatabaseHelper.instance;
+  Diary todayDiary;
+
+  List<String> statusImg = [
+    "assets/img/ico-weather.png",
+    "assets/img/ico-weather_2.png",
+    "assets/img/ico-weather_3.png",
+  ];
+
+  void getTodayDiary() async {
+    List<Diary> diary =
+        await dbHelper.getDiaryByDate(Utils.getFormatTime(DateTime.now()));
+    if (diary.isNotEmpty) {
+      todayDiary = diary.first;
+
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getTodayDiary();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       image: "assets/img/b1.jpg",
                     ),
                   )));
+          getTodayDiary();
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
@@ -90,7 +116,45 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget getTodayPage() {
-    return Container();
+    if (todayDiary == null) {
+      return Container(
+        child: const Text("일기를 작성해 주세요!"),
+      );
+    }
+    return Container(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              todayDiary.image,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: ListView(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${DateTime.now().month}.${DateTime.now().day}",
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    Image.asset(
+                      statusImg[todayDiary.status],
+                      fit: BoxFit.contain,
+                    )
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget getHistoryPage() {

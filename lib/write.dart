@@ -131,7 +131,7 @@ class _DiaryWritePageState extends State<DiaryWritePage> {
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               child: TextField(
-                controller: nameController,
+                controller: memoController,
                 minLines: 10,
                 maxLines: 20,
                 decoration: const InputDecoration(
